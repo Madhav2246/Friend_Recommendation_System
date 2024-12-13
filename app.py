@@ -272,11 +272,12 @@ def mutual_friends(name):
 
     return jsonify({str(f): [User.query.get(mid).name for mid in mids] for f, mids in mutuals.items()}), 200
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
-    # Clear the session to log the user out
-    session.pop('user_id', None)  # Assuming you're using session to store user_id
-    return redirect(url_for('home.html'))  # Redirect to login page or homepage
+    # Clear the user session
+    session.clear()
+    # Redirect to the home page
+    return redirect(url_for('home'))
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
