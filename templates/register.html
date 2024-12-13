@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a89cc, #82ccdd);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #2d3436;
+        }
+        .card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        h3 {
+            text-align: center;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: 500;
+            color: #636e72;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            background: #f9f9f9;
+            margin-bottom: 15px;
+            transition: 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #6a89cc;
+            background: #ffffff;
+            box-shadow: 0 0 5px rgba(106, 137, 204, 0.5);
+            outline: none;
+        }
+        .btn-custom {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: #6c5ce7;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .btn-custom:hover {
+            background-color: #a29bfe;
+            transform: translateY(-2px);
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-center a {
+            color: #6c5ce7;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .text-center a:hover {
+            color: #a29bfe;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h3>Register</h3>
+        <form action="/register" method="POST" enctype="multipart/form-data">
+            <label for="name">Full Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+            
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+            
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+            
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+            
+            <label for="profile_picture">Profile Picture</label>
+            <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept="image/*">
+            
+            <button type="submit" class="btn btn-custom">Register</button>
+        </form>
+        
+        <p class="text-center mt-3">Already registered? <a href="/login">Login here</a></p>
+    </div>
+</body>
+</html>

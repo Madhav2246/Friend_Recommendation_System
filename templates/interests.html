@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Interests</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            color: #2d3436;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            width: 90%;
+            animation: slideIn 0.8s ease-in-out;
+        }
+
+        h3 {
+            text-align: center;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            background-color: #f4f6f7;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:hover, .form-select:focus {
+            border-color: #74b9ff;
+            background-color: #ffffff;
+            box-shadow: 0 0 5px rgba(116, 185, 255, 0.5);
+            outline: none;
+        }
+
+        .btn-custom {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: #6c5ce7;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-custom:hover {
+            background-color: #a29bfe;
+            transform: translateY(-3px);
+        }
+
+        .btn-custom:active {
+            transform: translateY(0);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h3>🎯 Select Your Interests</h3>
+        <form action="/interests" method="POST">
+            <input type="hidden" name="name" value="{{ name }}">
+            <div class="mb-3">
+                <label for="sports">🏏 Favorite Sport</label>
+                <select class="form-select" id="sports" name="sports">
+                    <option value="1">Cricket</option>
+                    <option value="2">Football</option>
+                    <option value="3">Basketball</option>
+                    <option value="4">Tennis</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="education">🎓 Education Interest</label>
+                <select class="form-select" id="education" name="education">
+                    <option value="1">Science</option>
+                    <option value="2">Arts</option>
+                    <option value="3">Commerce</option>
+                    <option value="4">Technology</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="movies">🎬 Favorite Movie Genre</label>
+                <select class="form-select" id="movies" name="movies">
+                    <option value="1">Action</option>
+                    <option value="2">Comedy</option>
+                    <option value="3">Romance</option>
+                    <option value="4">Horror</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="dance">💃 Favorite Dance Style</label>
+                <select class="form-select" id="dance" name="dance">
+                    <option value="1">Hip Hop</option>
+                    <option value="2">Salsa</option>
+                    <option value="3">Classical</option>
+                    <option value="4">Jazz</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="songs">🎵 Favorite Music Genre</label>
+                <select class="form-select" id="songs" name="songs">
+                    <option value="1">Pop</option>
+                    <option value="2">Rock</option>
+                    <option value="3">Classical</option>
+                    <option value="4">Jazz</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="travel">✈️ Favorite Travel Destination</label>
+                <select class="form-select" id="travel" name="travel">
+                    <option value="1">Mountains</option>
+                    <option value="2">Beaches</option>
+                    <option value="3">Cities</option>
+                    <option value="4">Countryside</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="books">📚 Favorite Book Genre</label>
+                <select class="form-select" id="books" name="books">
+                    <option value="1">Fiction</option>
+                    <option value="2">Non-Fiction</option>
+                    <option value="3">Sci-Fi</option>
+                    <option value="4">Fantasy</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="cooking">🍳 Favorite Cuisine to Cook</label>
+                <select class="form-select" id="cooking" name="cooking">
+                    <option value="1">Italian</option>
+                    <option value="2">Indian</option>
+                    <option value="3">Chinese</option>
+                    <option value="4">Mexican</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="art">🎨 Favorite Art Style</label>
+                <select class="form-select" id="art" name="art">
+                    <option value="1">Abstract</option>
+                    <option value="2">Realism</option>
+                    <option value="3">Impressionism</option>
+                    <option value="4">Pop Art</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-custom">Save Interests</button>
+        </form>
+    </div>
+</body>
+</html>

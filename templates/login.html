@@ -1,0 +1,89 @@
+<!-- Login Page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: #2d3436;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #2d3436;
+            margin-bottom: 1rem;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #636e72;
+            text-align: left;
+        }
+        input {
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #dfe6e9;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        button {
+            padding: 0.8rem;
+            font-size: 1rem;
+            color: #ffffff;
+            background-color: #6c5ce7;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #a29bfe;
+        }
+        a {
+            color: #6c5ce7;
+            text-decoration: none;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <form action="/login" method="POST">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <button type="submit">Login</button>
+        </form>
+        <a href="/register">Register Here</a>
+        <a href="/forgot-password">Forgot Password?</a>
+    </div>
+</body>
+</html>

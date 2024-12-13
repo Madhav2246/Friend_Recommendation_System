@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #74b9ff, #81ecec);
+            color: #2d3436;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #0984e3;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .profile-header img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .profile-header .profile-info {
+            flex-grow: 1;
+            margin-left: 20px;
+        }
+        .profile-header h2 {
+            margin: 0;
+            font-size: 2rem;
+            color: #2d3436;
+        }
+        .profile-header p {
+            margin: 5px 0;
+            color: #636e72;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin: 20px 0;
+        }
+        .stats .stat {
+            flex: 1;
+            text-align: center;
+        }
+        .stats .stat h3 {
+            font-size: 1.5rem;
+            margin: 5px 0;
+            color: #2d3436;
+        }
+        .stats .stat p {
+            font-size: 1rem;
+            color: #636e72;
+        }
+        .list-container {
+            width: 100%;
+        }
+        .list-container h3 {
+            margin-bottom: 10px;
+            color: #2d3436;
+        }
+        .list-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 0;
+            list-style: none;
+        }
+        .list-group-item {
+            background: #f9f9f9;
+            flex: 1 1 calc(33.333% - 30px);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .list-group-item:hover {
+            background: #74b9ff;
+            color: #ffffff;
+            transform: translateY(-3px);
+        }
+        .follow-button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: #6c5ce7;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .follow-button:hover {
+            background-color: #a29bfe;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            background: #0984e3;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{ user.name }}</h1>
+    </header>
+    <div class="profile-container">
+        <div class="profile-header">
+            <!-- Display Profile Picture -->
+            {% if user.profile_picture %}
+                <img src="{{ profile_picture_url }}" alt="Profile Picture" width="150" height="150">
+            {% else %}
+                <img src="{{ url_for('static', filename='default_profile_picture.jpg') }}" alt="Default Profile Picture" width="150" height="150">
+            {% endif %}
+            
+            <div class="profile-info">
+                <h2>{{ user.name }}</h2>
+                <p>Email: {{ user.email }}</p>
+                <p>Username: {{ user.username }}</p>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <h3>{{ following_count }}</h3>
+                <p>Following</p>
+            </div>
+            <div class="stat">
+                <h3>{{ followers_count }}</h3>
+                <p>Followers</p>
+            </div>
+            <div class="stat">
+                <h3>{{ recommendations_count }}</h3>
+                <p>Recommendations</p>
+            </div>
+        </div>
+
+       <!-- Recommended Friends Section -->
+       <div class="list-container">
+        <h3>Recommended Friends</h3>
+        <ul class="list-group">
+            {% for friend in recommendations %}
+                <li class="list-group-item">
+                    {{ friend }}
+                    <form action="/follow/{{ friend }}" method="POST">
+                        <button type="submit" class="follow-button">Follow</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+        <!-- Followers List -->
+        <div class="list-container">
+            <h3>Followers</h3>
+            <ul class="list-group">
+                {% for follower in followers %}
+                    <li class="list-group-item">{{ follower }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Following List -->
+        <div class="list-container">
+            <h3>Following</h3>
+            <ul class="list-group">
+                {% for following in following %}
+                    <li class="list-group-item">{{ following }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <form action="{{ url_for('logout') }}" method="POST">
+        <button type="submit" class="follow-button" style="background-color: #e74c3c; width: 200px;">Logout</button>
+    </form>
+
+    <footer>
+        &copy; 2024 Friend Recommendation System. All rights reserved.
+    </footer>
+</body>
+
+
+</html>
