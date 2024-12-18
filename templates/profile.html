@@ -59,31 +59,27 @@
             font-size: 2rem;
             color: #2d3436;
         }
-        .profile-header p {
-            margin: 5px 0;
-            color: #636e72;
-        }
         .stats {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             width: 100%;
             margin: 20px 0;
         }
-        .stats .stat {
-            flex: 1;
+        .stat {
             text-align: center;
         }
-        .stats .stat h3 {
+        .stat h3 {
             font-size: 1.5rem;
             margin: 5px 0;
             color: #2d3436;
         }
-        .stats .stat p {
+        .stat p {
             font-size: 1rem;
             color: #636e72;
         }
         .list-container {
             width: 100%;
+            margin-top: 20px;
         }
         .list-container h3 {
             margin-bottom: 10px;
@@ -110,7 +106,8 @@
             color: #ffffff;
             transform: translateY(-3px);
         }
-        .follow-button {
+        .follow-button, .explore-button {
+            display: inline-block;
             margin-top: 10px;
             padding: 8px 12px;
             font-size: 14px;
@@ -122,7 +119,7 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-        .follow-button:hover {
+        .follow-button:hover, .explore-button:hover {
             background-color: #a29bfe;
         }
         footer {
@@ -139,52 +136,61 @@
         <h1>Welcome, {{ user.name }}</h1>
     </header>
     <div class="profile-container">
+        <!-- Profile Header -->
         <div class="profile-header">
-            <!-- Display Profile Picture -->
-            {% if user.profile_picture %}
-                <img src="{{ profile_picture_url }}" alt="Profile Picture" width="150" height="150">
-            {% else %}
-                <img src="{{ url_for('static', filename='default_profile_picture.jpg') }}" alt="Default Profile Picture" width="150" height="150">
-            {% endif %}
-            
+            <!-- Profile Picture -->
+            <img src="{{ profile_picture_url }}" alt="Profile Picture">
+
+            <!-- Profile Info -->
             <div class="profile-info">
                 <h2>{{ user.name }}</h2>
                 <p>Email: {{ user.email }}</p>
                 <p>Username: {{ user.username }}</p>
             </div>
         </div>
-        
+
+        <!-- Stats Section -->
         <div class="stats">
             <div class="stat">
-                <h3>{{ following_count }}</h3>
-                <p>Following</p>
-            </div>
-            <div class="stat">
-                <h3>{{ followers_count }}</h3>
+                <h3 class="follower-count">{{ followers|length }}</h3>
                 <p>Followers</p>
             </div>
             <div class="stat">
-                <h3>{{ recommendations_count }}</h3>
+                <h3 class="following-count">{{ following|length }}</h3>
+                <p>Following</p>
+            </div>
+            <div class="stat">
+                <h3 class="recommendations-count">{{ recommendations|length }}</h3>
                 <p>Recommendations</p>
             </div>
         </div>
 
-       <!-- Recommended Friends Section -->
-       <div class="list-container">
-        <h3>Recommended Friends</h3>
-        <ul class="list-group">
-            {% for friend in recommendations %}
-                <li class="list-group-item">
-                    {{ friend }}
-                    <form action="/follow/{{ friend }}" method="POST">
-                        <button type="submit" class="follow-button">Follow</button>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+        <!-- Recommendations Section -->
+        <div class="list-container">
+            <h3>Recommended Friends</h3>
+            <ul class="list-group">
+                {% if recommendations %}
+                    {% for friend in recommendations %}
+                        <li class="list-group-item">
+                            {{ friend.name }}
+                            {% if friend.added %}
+                                <!-- Chat Button -->
+                                <a href="{{ url_for('chat', friend_id=friend.friend_id) }}" class="btn btn-primary">Chat</a>
+                            {% else %}
+                                <!-- Add Friend Button -->
+                                <form action="{{ url_for('follow', friend_id=friend.friend_id) }}" method="POST">
+                                    <button type="submit" class="btn btn-success add-friend-button">Add Friend</button>
+                                </form>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item">No recommendations available.</li>
+                {% endif %}
+            </ul>
+        </div>
 
-        <!-- Followers List -->
+        <!-- Followers Section -->
         <div class="list-container">
             <h3>Followers</h3>
             <ul class="list-group">
@@ -194,23 +200,65 @@
             </ul>
         </div>
 
-        <!-- Following List -->
+        <!-- Following Section -->
         <div class="list-container">
             <h3>Following</h3>
             <ul class="list-group">
-                {% for following in following %}
-                    <li class="list-group-item">{{ following }}</li>
+                {% for follow in following %}
+                    <li class="list-group-item">{{ follow }}</li>
                 {% endfor %}
             </ul>
         </div>
+
+        <!-- Explore Recommendations -->
+        <div class="list-container">
+            <form action="{{ url_for('explore_recommendations') }}" method="GET">
+                <button type="submit" class="btn btn-info">Explore More Recommendations</button>
+            </form>
+        </div>
     </div>
-    <form action="{{ url_for('logout') }}" method="POST">
-        <button type="submit" class="follow-button" style="background-color: #e74c3c; width: 200px;">Logout</button>
-    </form>
+
     <footer>
         &copy; 2024 Friend Recommendation System. All rights reserved.
     </footer>
+
+    <!-- JavaScript for Dynamic Updates -->
+    <script>
+        document.addEventListener('submit', function (e) {
+            if (e.target.matches('.add-friend-button')) {
+                e.preventDefault();
+
+                const form = e.target.closest('form');
+                fetch(form.action, {
+                    method: form.method,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(new FormData(form))
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Find parent list item
+                        const listItem = form.closest('.list-group-item');
+                        
+                        // Remove Add Friend button
+                        form.remove();
+
+                        // Add Chat button dynamically
+                        const chatButton = document.createElement('a');
+                        chatButton.href = `/chat/${listItem.querySelector('.btn-success').dataset.friendId}`;
+                        chatButton.textContent = 'Chat';
+                        chatButton.className = 'btn btn-primary';
+                        listItem.appendChild(chatButton);
+
+                        // Update stats dynamically
+                        const followerCount = document.querySelector('.follower-count');
+                        const recommendationCount = document.querySelector('.recommendations-count');
+
+                        if (followerCount) followerCount.textContent = parseInt(followerCount.textContent) + 1;
+                        if (recommendationCount) recommendationCount.textContent = parseInt(recommendationCount.textContent) - 1;
+                    }
+                })
+                .catch(console.error);
+            }
+        });
+    </script>
 </body>
-
-
-</html>
