@@ -1,53 +1,51 @@
 from datetime import timedelta
-from flask import Flask, request, jsonify, render_template, redirect, url_for, flash, session
+from flask import Flask, request, jsonify, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_session import Session
-from flask_mail import Mail, Message
-from flask_socketio import SocketIO, emit, join_room, leave_room
-from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import URLSafeTimedSerializer
 from sklearn.cluster import KMeans
-from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import os
+from flask import Flask, session
+from flask_session import Session
+from flask_mail import Mail, Message
+from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import URLSafeTimedSerializer
+from collections import defaultdict, deque
 from werkzeug.utils import secure_filename
+from sklearn.metrics.pairwise import cosine_similarity
+from flask_socketio import SocketIO, emit, join_room, leave_room
+import sqlalchemy
 
-# Initialize Flask app
+
 app = Flask(__name__)
 
-# General configurations
-app.secret_key = 'Maddy'
-app.permanent_session_lifetime = timedelta(days=7)
-
-# Session configuration
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_PERMANENT'] = False
-app.config['SESSION_USE_SIGNER'] = True
-app.config['SESSION_COOKIE_NAME'] = 'maddy_session'
-
-# SQLAlchemy configuration
-base_dir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(base_dir, "instance", "friends.db")}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Mail configuration
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'yalamarthi.sriram123@gmail.com'
-app.config['MAIL_PASSWORD'] = 'uwrh qgkr efjc kguo'
-
-# Upload folder configuration
-app.config['UPLOAD_FOLDER'] = os.path.join(base_dir, 'static', 'profile_pictures', 'uploads')
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-# Initialize extensions
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+app.secret_key = 'Maddy'
 Session(app)
 socketio = SocketIO(app)
+app.permanent_session_lifetime = timedelta(days=7) 
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///friends.db'  # Replace with your database URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Configurations
+base_dir = os.path.abspath(os.path.dirname(__file__))
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(base_dir, "instance", "friends.db")}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'yalamarthi.sriram123@gmail.com' 
+app.config['MAIL_PASSWORD'] = 'uwrh qgkr efjc kguo' 
+app.config['UPLOAD_FOLDER'] = 'E:\\Fundamentals of AI\\Friend Recommendation system\\static\\profile_pictures\\uploads'
+
+# Ensure the upload folder exists
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 mail = Mail(app)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # Models
 class User(db.Model):
