@@ -9,11 +9,10 @@ Werkzeug==2.3.7
 itsdangerous==2.1.2
 
 SQLAlchemy==2.0.21
-psycopg2-binary==2.9.8  # Replace with the database connector you are using (e.g., PostgreSQL)
-sqlite==3.0.1          # Only needed if using SQLite for local development
+psycopg2-binary==2.9.8  # Use only if PostgreSQL is your database; otherwise, remove.
 
 numpy==1.25.2
 scikit-learn==1.3.1
 
-eventlet==0.33.3      # Required for Flask-SocketIO with asynchronous servers
-gevent==23.9.0        # Alternative to eventlet for Flask-SocketIO
+eventlet==0.33.3
+gevent==23.9.0
