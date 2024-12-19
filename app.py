@@ -30,6 +30,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Configurations
 base_dir = os.path.abspath(os.path.dirname(__file__))
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(base_dir, "instance", "friends.db")}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  
@@ -107,6 +109,10 @@ with app.app_context():
 @app.route("/")
 def home():
     return render_template('home.html')
+
+@app.errorhandler(500)
+def internal_error(error):
+    return "Internal Server Error", 500
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -575,6 +581,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=3000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host="0.0.0.0", port=port)
 
 
