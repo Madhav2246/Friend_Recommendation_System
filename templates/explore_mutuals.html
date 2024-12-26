@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Mutual Friends</title>
+    <style>
+        /* General Reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        /* Header Styling */
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        /* Filter Section */
+        .filter-container {
+            background: white;
+            padding: 15px 20px;
+            margin: 0 auto 20px auto;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .filter-container label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .filter-container select {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .filter-container .explore-button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .filter-container .explore-button:hover {
+            background-color: #45a049;
+        }
+
+        /* List Containers */
+        .list-container {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .list-container h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            color: #4CAF50;
+        }
+
+        .list-group {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .list-group-item {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-group-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .list-group-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .back-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-button {
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Explore Mutual Friends</h1>
+    </header>
+
+    <!-- Category Selector -->
+    <div class="filter-container">
+        <form action="{{ url_for('explore_mutuals') }}" method="GET">
+            <label for="category">Select Category:</label>
+            <select name="category" id="category">
+                <option value="sports" {% if category == 'sports' %}selected{% endif %}>Sports</option>
+                <option value="movies" {% if category == 'movies' %}selected{% endif %}>Movies</option>
+                <option value="dance" {% if category == 'dance' %}selected{% endif %}>Dance</option>
+                <option value="songs" {% if category == 'songs' %}selected{% endif %}>Songs</option>
+                <option value="education" {% if category == 'education' %}selected{% endif %}>Education</option>
+                <option value="travel" {% if category == 'travel' %}selected{% endif %}>Travel</option>
+                <option value="books" {% if category == 'books' %}selected{% endif %}>Books</option>
+                <option value="cooking" {% if category == 'cooking' %}selected{% endif %}>Cooking</option>
+                <option value="art" {% if category == 'art' %}selected{% endif %}>Art</option>
+            </select>
+            <button type="submit" class="explore-button">Filter Mutuals</button>
+        </form>
+    </div>
+
+    <!-- Greedy Mutuals Section -->
+    <div class="list-container">
+        <h3>Mutual Friends (Greedy)</h3>
+        <ul class="list-group">
+            {% if mutuals_greedy %}
+                {% for mutual in mutuals_greedy %}
+                    <li class="list-group-item">
+                        {{ mutual.name }} (Score: {{ mutual.score }})
+                        <a href="{{ url_for('chat', friend_id=mutual.id) }}" class="btn btn-primary">Chat</a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item">No mutual friends found.</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Filtered Mutuals Section -->
+    <div class="list-container">
+        <h3>Filtered Mutual Friends ({{ category|capitalize }})</h3>
+        <ul class="list-group">
+            {% if mutuals_dijkstra %}
+                {% for mutual in mutuals_dijkstra %}
+                    <li class="list-group-item">
+                        {{ mutual.name }} (Score: {{ mutual.score }})
+                        <a href="{{ url_for('chat', friend_id=mutual.id) }}" class="btn btn-primary">Chat</a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item">No filtered mutual friends found for {{ category }}.</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Back Button -->
+<div class="back-container">
+    <button class="back-button" onclick="window.history.back()">Go Back</button>
+</div></div>
+</body>
+</html>

@@ -138,10 +138,7 @@
     <div class="profile-container">
         <!-- Profile Header -->
         <div class="profile-header">
-            <!-- Profile Picture -->
-            <img src="{{ profile_picture_url }}" alt="Profile Picture">
-
-            <!-- Profile Info -->
+            <img src="{{ user.profile_picture }}" alt="Profile Picture" class="profile-picture">
             <div class="profile-info">
                 <h2>{{ user.name }}</h2>
                 <p>Email: {{ user.email }}</p>
@@ -152,42 +149,17 @@
         <!-- Stats Section -->
         <div class="stats">
             <div class="stat">
-                <h3 class="follower-count">{{ followers|length }}</h3>
+                <h3 id="follower-count">{{ followers|length }}</h3>
                 <p>Followers</p>
             </div>
             <div class="stat">
-                <h3 class="following-count">{{ following|length }}</h3>
+                <h3 id="following-count">{{ following|length }}</h3>
                 <p>Following</p>
             </div>
             <div class="stat">
-                <h3 class="recommendations-count">{{ recommendations|length }}</h3>
+                <h3 id="recommendations-count">{{ recommendations|length }}</h3>
                 <p>Recommendations</p>
             </div>
-        </div>
-
-        <!-- Recommendations Section -->
-        <div class="list-container">
-            <h3>Recommended Friends</h3>
-            <ul class="list-group">
-                {% if recommendations %}
-                    {% for friend in recommendations %}
-                        <li class="list-group-item">
-                            {{ friend.name }}
-                            {% if friend.added %}
-                                <!-- Chat Button -->
-                                <a href="{{ url_for('chat', friend_id=friend.friend_id) }}" class="btn btn-primary">Chat</a>
-                            {% else %}
-                                <!-- Add Friend Button -->
-                                <form action="{{ url_for('follow', friend_id=friend.friend_id) }}" method="POST">
-                                    <button type="submit" class="btn btn-success add-friend-button">Add Friend</button>
-                                </form>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                {% else %}
-                    <li class="list-group-item">No recommendations available.</li>
-                {% endif %}
-            </ul>
         </div>
 
         <!-- Followers Section -->
@@ -195,7 +167,10 @@
             <h3>Followers</h3>
             <ul class="list-group">
                 {% for follower in followers %}
-                    <li class="list-group-item">{{ follower }}</li>
+                    <li class="list-group-item">
+                        <strong>{{ follower.name }}</strong>
+                        <a href="{{ url_for('chat', friend_id=follower.id) }}" class="btn btn-primary">Chat</a>
+                    </li>
                 {% endfor %}
             </ul>
         </div>
@@ -204,61 +179,111 @@
         <div class="list-container">
             <h3>Following</h3>
             <ul class="list-group">
-                {% for follow in following %}
-                    <li class="list-group-item">{{ follow }}</li>
+                {% for following_user in following %}
+                    <li class="list-group-item">
+                        <strong>{{ following_user.name }}</strong>
+                        <a href="{{ url_for('chat', friend_id=following_user.id) }}" class="btn btn-primary">Chat</a>
+                    </li>
                 {% endfor %}
             </ul>
         </div>
 
-        <!-- Explore Recommendations -->
+        <!-- Recommendations Section -->
         <div class="list-container">
+            <h3>Recommended Friends</h3>
+            <ul class="list-group">
+                {% for recommendation in recommendations %}
+                    <li class="list-group-item" data-friend-id="{{ recommendation.id }}">
+                        {{ recommendation.name }}
+                        <form action="{{ url_for('follow', friend_id=recommendation.id) }}" method="POST">
+                            <button type="submit" class="btn btn-success add-friend-button">Add Friend</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+<!-- Mutual Interest-Based Recommendations Section -->
+<div class="list-container">
+    <h3>Mutual Interest-Based Recommendations</h3>
+    <ul class="list-group">
+        {% for mutual in mutual_friends %}
+            <li class="list-group-item" data-friend-id="{{ mutual.id }}">
+                {{ mutual.name }} (Score: {{ mutual.score }})
+                <form action="{{ url_for('follow', friend_id=mutual.id) }}" method="POST">
+                    <button type="submit" class="btn btn-success add-friend-button">Add Friend</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Explore Options -->
+        <!-- Explore Mutuals Section -->
+
+        <div class="list-container">
+            <form action="{{ url_for('explore_mutuals') }}" method="GET">
+                <button type="submit" class="btn btn-primary">Explore Mutuals</button>
+            </form>
+
             <form action="{{ url_for('explore_recommendations') }}" method="GET">
-                <button type="submit" class="btn btn-info">Explore More Recommendations</button>
+                <button type="submit" class="btn btn-info">Explore All Recommendations</button>
             </form>
         </div>
     </div>
 
+
     <footer>
         &copy; 2024 Friend Recommendation System. All rights reserved.
     </footer>
+</body>
+
 
     <!-- JavaScript for Dynamic Updates -->
     <script>
-        document.addEventListener('submit', function (e) {
+        document.addEventListener('submit', async function (e) {
             if (e.target.matches('.add-friend-button')) {
                 e.preventDefault();
 
                 const form = e.target.closest('form');
-                fetch(form.action, {
-                    method: form.method,
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(new FormData(form))
-                })
-                .then(response => {
+                const friendId = e.target.dataset.friendId;
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: form.method,
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams(new FormData(form)),
+                    });
+
                     if (response.ok) {
-                        // Find parent list item
+                        // Find the parent list item
                         const listItem = form.closest('.list-group-item');
-                        
+
                         // Remove Add Friend button
                         form.remove();
 
                         // Add Chat button dynamically
                         const chatButton = document.createElement('a');
-                        chatButton.href = `/chat/${listItem.querySelector('.btn-success').dataset.friendId}`;
+                        chatButton.href = `/chat/${friendId}`;
                         chatButton.textContent = 'Chat';
                         chatButton.className = 'btn btn-primary';
                         listItem.appendChild(chatButton);
 
                         // Update stats dynamically
-                        const followerCount = document.querySelector('.follower-count');
-                        const recommendationCount = document.querySelector('.recommendations-count');
+                        const followerCount = document.getElementById('follower-count');
+                        const recommendationCount = document.getElementById('recommendations-count');
 
                         if (followerCount) followerCount.textContent = parseInt(followerCount.textContent) + 1;
                         if (recommendationCount) recommendationCount.textContent = parseInt(recommendationCount.textContent) - 1;
+                    } else {
+                        console.error('Failed to add friend:', await response.text());
                     }
-                })
-                .catch(console.error);
+                } catch (error) {
+                    console.error('Error:', error);
+                }
             }
         });
     </script>
 </body>
+
+

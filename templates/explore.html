@@ -1,145 +1,151 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <style>/* General Body Styles */
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f9;
-        color: #333;
-    }
-    
-    /* Header */
-    header {
-        background-color: #3498db;
-        color: white;
-        text-align: center;
-        padding: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Filter Container */
-    .filter-container {
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        text-align: center;
-    }
-    
-    .filter-container form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        align-items: center;
-    }
-    
-    label {
-        font-size: 16px;
-        font-weight: bold;
-    }
-    
-    select {
-        padding: 10px;
-        font-size: 14px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        width: 100%;
-        max-width: 300px;
-        background-color: #fff;
-        outline: none;
-        transition: border-color 0.3s;
-    }
-    
-    select:focus {
-        border-color: #3498db;
-    }
-    
-    button.explore-button {
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    
-    button.explore-button:hover {
-        background-color: #2980b9;
-    }
-    
-    /* List Container */
-    .list-container {
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    .list-container h3 {
-        text-align: center;
-        margin-bottom: 15px;
-        color: #555;
-    }
-    
-    .list-group {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    
-    .list-group-item {
-        padding: 10px 15px;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        margin-bottom: 5px;
-        border-radius: 4px;
-        transition: background-color 0.3s;
-    }
-    
-    .list-group-item:hover {
-        background-color: #f0f0f0;
-    }
-    
-    .list-group-item:last-child {
-        margin-bottom: 0;
-    }
-    
-    /* Back Button */
-    .back-button {
-        display: block;
-        margin: 20px auto;
-        text-align: center;
-        padding: 10px 20px;
-        background-color: #2c3e50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background-color 0.3s;
-    }
-    
-    .back-button:hover {
-        background-color: #1f2d3a;
-    }
-    
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .filter-container, .list-container {
-            padding: 15px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Recommendations</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
         }
-    
-        select, button.explore-button {
+        
+        /* Header */
+        header {
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Filter Container */
+        .filter-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .filter-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        select {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             width: 100%;
+            max-width: 300px;
+            background-color: #fff;
+            outline: none;
+            transition: border-color 0.3s;
         }
-    }</style>
+        
+        select:focus {
+            border-color: #3498db;
+        }
+        
+        button.explore-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button.explore-button:hover {
+            background-color: #2980b9;
+        }
+        
+        /* List Container */
+        .list-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .list-container h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .list-group {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .list-group-item {
+            padding: 10px 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .list-group-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .list-group-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Back Button */
+        .back-button {
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-button:hover {
+            background-color: #1f2d3a;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .filter-container, .list-container {
+                padding: 15px;
+            }
+        
+            select, button.explore-button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -162,14 +168,23 @@
             <button type="submit" class="explore-button">Get Recommendations</button>
         </form>
     </div>
-    
 
+    <!-- Recommendations Section -->
     <div class="list-container">
         <h3>Recommended Friends</h3>
         <ul class="list-group">
             {% if recommendations %}
-                {% for friend in recommendations %}
-                    <li class="list-group-item">{{ friend }}</li>
+                {% for recommendation in recommendations %}
+                    <li class="list-group-item" data-friend-id="{{ recommendation.id }}">
+                        {{ recommendation.name }}
+                        {% if recommendation.added %}
+                            <a href="{{ url_for('chat', friend_id=recommendation.id) }}" class="btn btn-primary">Chat</a>
+                        {% else %}
+                            <form action="{{ url_for('follow', friend_id=recommendation.id) }}" method="POST">
+                                <button type="submit" class="btn btn-success">Add Friend</button>
+                            </form>
+                        {% endif %}
+                    </li>
                 {% endfor %}
             {% else %}
                 <li class="list-group-item">No recommendations available for the selected category.</li>
@@ -177,7 +192,8 @@
         </ul>
     </div>
 
-    <!-- Back Button -->
-    <button class="back-button" onclick="window.history.back()">Go to Previous Page</button>
+    <div class="back-container">
+        <button class="back-button" onclick="window.history.back()">Go to Previous Page</button>
+    </div>
 </body>
 </html>
